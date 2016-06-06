@@ -14,9 +14,9 @@
  *    #theJoysOfLegacySoftware
  */
 // who needs an autoloader when you can include them all manually and painstakingly 
-include __DIR__ . '/adapter_interface.php';
-include __DIR__ . '/exceptions/file_exists.php';
-include __DIR__ . '/exceptions/file_not_found.php';
+#include __DIR__ . '/adapter_interface.php';
+#include __DIR__ . '/exceptions/file_exists.php';
+#include __DIR__ . '/exceptions/file_not_found.php';
 
 class Filesystem {
 
