@@ -1,4 +1,5 @@
 <?php
+namespace FabricDigital\FileAdpater;
 
 class Local implements AdapterInterface{
 

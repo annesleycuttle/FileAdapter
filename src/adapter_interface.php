@@ -1,4 +1,6 @@
 <?php
+namespace FabricDigital\FileAdpater;
+
 interface AdapterInterface {
 
 	 /**
