@@ -1,5 +1,5 @@
 <?php
-namespace FabricDigital\FileAdpater;
+namespace FabricDigital\FileAdapter;
 use Exception as BaseException;
 class FileNotFoundException extends Exception
 {

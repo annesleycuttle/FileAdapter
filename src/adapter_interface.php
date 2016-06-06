@@ -1,5 +1,5 @@
 <?php
-namespace FabricDigital\FileAdpater;
+namespace FabricDigital\FileAdapter;
 
 interface AdapterInterface {
 

@@ -18,7 +18,7 @@
 #include __DIR__ . '/exceptions/file_exists.php';
 #include __DIR__ . '/exceptions/file_not_found.php';
 
-namespace FabricDigital\FileAdpater;
+namespace FabricDigital\FileAdapter;
 
 class Filesystem {
 
