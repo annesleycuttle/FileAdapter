@@ -1,5 +1,5 @@
 <?php
-namespace FileAdapter;
+namespace FileAdapter\Adapters;
 
 class Local implements AdapterInterface{
 

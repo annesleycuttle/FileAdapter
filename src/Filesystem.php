@@ -24,7 +24,7 @@ class Filesystem {
 
 	protected $adapter = null;
 
-	public function __construct( AdapterInterface $adapter ){
+	public function __construct( Adapters\AdapterInterface $adapter ){
 		$this->adapter = $adapter;
 	}
 	/**

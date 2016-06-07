@@ -1,5 +1,5 @@
 <?php
-namespace FileAdapter;
+namespace FileAdapter\Adapters;
 
 interface AdapterInterface {
 

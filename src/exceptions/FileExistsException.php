@@ -1,5 +1,5 @@
 <?php
-namespace FileAdapter;
+namespace FileAdapter\Exceptions;
 use Exception as BaseException;
 class FileExistsException extends Exception
 {
