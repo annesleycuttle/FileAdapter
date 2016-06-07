@@ -1,6 +1,10 @@
 <?php
 namespace FileAdapter\Adapters;
 
+use FileAdapter\Exceptions\FileNotFoundException;
+use FileAdapter\Exceptions\FileExistsException;
+use finfo;
+
 class Local implements AdapterInterface{
 
 	private $root_path = '';
@@ -261,10 +265,19 @@ class Local implements AdapterInterface{
 	 * @author mike.bamber
 	 * @date   2016-03-17
 	  * @param  string     $path
-	 * @return int           
+	 * @return int (bytes)          
 	 */
 	public function getSize($path){
 
+		$full_path = $this->root_path . DIRECTORY_SEPARATOR . $path;
+		if( $this->has($path) ){
+
+			return filesize($full_path);
+
+		}else{
+			throw new FileNotFoundException($full_path );
+		}
+		
 	}
 	/**
 	 * return the files mime type
@@ -275,15 +288,31 @@ class Local implements AdapterInterface{
 	 */
 	public function getMimetype($path){
 
+		$full_path = $this->root_path . DIRECTORY_SEPARATOR . $path;
+		if( $this->has($path) ){
+
+			$finfo = new finfo(FILEINFO_MIME_TYPE);
+			return $finfo->file($full_path);
+
+		}else{
+			throw new FileNotFoundException($full_path );
+		}
 	}
 	/**
 	 * retreive the timestamp of the file
 	 * @author mike.bamber
 	 * @date   2016-03-17
 	  * @param  string     $path
-	 * @return string
+	 * @return int (unix timestamp)
 	 */
 	public function getTimestamp($path){
+		$full_path = $this->root_path . DIRECTORY_SEPARATOR . $path;
+		if( $this->has($path) ){
 
+			return filemtime ($full_path);
+
+		}else{
+			throw new FileNotFoundException($full_path );
+		}
 	}
 }

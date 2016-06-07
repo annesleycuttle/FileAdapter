@@ -1,6 +1,8 @@
 <?php
 namespace FileAdapter\Exceptions;
-use Exception as BaseException;
+
+use \Exception;
+
 class FileExistsException extends Exception
 {
     /**
@@ -14,7 +16,7 @@ class FileExistsException extends Exception
      * @param int           $code
      * @param BaseException $previous
      */
-    public function __construct($path, $code = 0, BaseException $previous = null)
+    public function __construct($path, $code = 0, Exception $previous = null)
     {
         $this->path = $path;
         parent::__construct('File already exists at path: ' . $this->getPath(), $code, $previous);
