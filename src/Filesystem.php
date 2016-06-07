@@ -185,5 +185,29 @@ class Filesystem {
 	public function getTimestamp($path){
 		return $this->getAdapter()->getTimestamp( $path );
 	}
+	/**
+	 * Check if the provided path is of a given file type(s) specifed 
+	 * by the provided list
+	 * @param  string  $path  -> path to the file
+	 * @param  array   $types -> array of string file extension types, e.g. ('csv','txt','pdf')
+	 * @return boolean        
+	 */
+	public function isType($path, $types = array()){
+
+		$mime = $this->getAdapter()->getMimetype( $path );
+		$bits = explode('/', $mime);
+		return in_array($bits[1], $types);
+
+	}
+	/**
+	 * Given a file path and a memory reference string, it will 
+	 * return true if the file size is under the 
+	 * @param  string $path         -> path to the file
+	 * @param  string/int $mixed_memory -> int : bytes / string memory ref, e.g. 54mb|34kb|4gb (case in-sensitive)
+	 * @return boolean               
+	 */
+	public function checkFilesize($path, $mixed_memory){
+
+	}
 
 }
