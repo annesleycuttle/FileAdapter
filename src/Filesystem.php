@@ -226,7 +226,7 @@ class Filesystem {
 	 */
 	public function setPermissions( $path , $permisions ){
 		return $this->getAdapter()->setPermissions( $path , $permisions );
-	
+	}
 	/**
 	 * Given a memory reference string, it will 
 	 * return the integer value of bytes for the passed ref 
