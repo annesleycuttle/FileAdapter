@@ -88,7 +88,7 @@ interface AdapterInterface {
 	 *
 	 * @param string $path
 	 *
-	 * @return array|false
+	 * @return int
 	 */
 	public function getSize($path);
 	/**
@@ -96,7 +96,7 @@ interface AdapterInterface {
 	 *
 	 * @param string $path
 	 *
-	 * @return array|false
+	 * @return string
 	 */
 	public function getMimetype($path);
 	/**
@@ -104,7 +104,25 @@ interface AdapterInterface {
 	 *
 	 * @param string $path
 	 *
-	 * @return array|false
+	 * @return int
 	 */
 	public function getTimestamp($path);
+
+	/**
+	 * Set the permissions for a file.
+	 *
+	 * @param string $path
+	 * @param string $permissions 
+	 *
+	 * @return boolean
+	 */
+	public function setPermissions($path, $permissions);	
+	/**
+	 * Get the permissions for a file.
+	 *
+	 * @param string $path
+	 *
+	 * @return int
+	 */
+	public function getPermissions($path);
 }

@@ -214,6 +214,13 @@ class Filesystem {
 		return ($size <= $bytes);
 	}
 	/**
+	 * Gets the permisions for  of a given file/folder
+	 * @param  String $path  - Path to file 
+	 */
+	public function getPermissions($path){
+		return $this->getAdapter()->getPermissions( $path );
+	}
+	/**
 	 * Given a memory reference string, it will 
 	 * return the integer value of bytes for the passed ref 
 	 * @param  string/int $mixed_memory -> int : bytes / string memory ref, e.g. 54mb|34kb|4gb (case in-sensitive)

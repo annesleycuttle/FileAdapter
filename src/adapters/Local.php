@@ -153,9 +153,16 @@ class Local implements AdapterInterface{
 	public function listContents($directory = '', $recursive = false){
 		return $this->process_folder($directory);
 	}
+	/**
+	 * [process_folder description]
+	 * @author mike.bamber
+	 * @date   2016-06-08
+	 * @param  [type]     $folder_path [description]
+	 * @return [type]                  [description]
+	 */
 	private function process_folder($folder_path){
 
-		 $directory = array();
+		$directory = array();
 
 		$folder = scandir($folder_path);
 
@@ -314,5 +321,13 @@ class Local implements AdapterInterface{
 		}else{
 			throw new FileNotFoundException($full_path );
 		}
+	}
+	public function setPermissions( $path , $permissions ){
+		
+	}	
+	public function getPermissions( $path ){
+		clearstatcache();
+		return  substr(sprintf('%o', fileperms($path)), -4);
+		#return fileperms($path);
 	}
 }
