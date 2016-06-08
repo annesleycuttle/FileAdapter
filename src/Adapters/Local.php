@@ -322,8 +322,17 @@ class Local implements AdapterInterface{
 			throw new FileNotFoundException($full_path );
 		}
 	}
+	/**
+	 * Set the permissions on a folder/file
+	 * @author mike.bamber
+	 * @date   2016-06-08
+	 * @param  string     $path        
+	 * @param  octal     $permissions -> mustl be octal e.g. 0755. not 755 or '755'
+	 */
 	public function setPermissions( $path , $permissions ){
-		
+
+		$full_path = $this->root_path . DIRECTORY_SEPARATOR . $path;
+		return chmod( $full_path , $permissions );
 	}
 	/**
 	 * Retrieve the file permissions of a folder in the numeric form
@@ -335,9 +344,10 @@ class Local implements AdapterInterface{
 	 */
 	public function getPermissions( $path ){
 		$perms = '0000';
+		$full_path = $this->root_path . DIRECTORY_SEPARATOR . $path;
 
 		clearstatcache();
-		$perms =  substr(sprintf('%o', fileperms($path)), -4);
+		$perms =  substr(sprintf('%o', fileperms($full_path)), -4);
 		
 		return $perms;
 	}
