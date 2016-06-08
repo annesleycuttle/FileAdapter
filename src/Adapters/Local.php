@@ -326,8 +326,13 @@ class Local implements AdapterInterface{
 		
 	}	
 	public function getPermissions( $path ){
-		clearstatcache();
-		return  substr(sprintf('%o', fileperms($path)), -4);
-		#return fileperms($path);
+		$perms = '0000';
+
+		if(is_readable($path)){
+			clearstatcache();
+			$perms =  substr(sprintf('%o', fileperms($path)), -4);
+		}
+		
+		return $perms;
 	}
 }
