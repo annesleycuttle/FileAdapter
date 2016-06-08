@@ -324,14 +324,20 @@ class Local implements AdapterInterface{
 	}
 	public function setPermissions( $path , $permissions ){
 		
-	}	
+	}
+	/**
+	 * Retrieve the file permissions of a folder in the numeric form
+	 *  e.g. 0755. This will be return as a string number
+	 * @author mike.bamber
+	 * @date   2016-06-08
+	 * @param  string     $path 
+	 * @return string         permissions
+	 */
 	public function getPermissions( $path ){
 		$perms = '0000';
 
-		if(is_readable($path)){
-			clearstatcache();
-			$perms =  substr(sprintf('%o', fileperms($path)), -4);
-		}
+		clearstatcache();
+		$perms =  substr(sprintf('%o', fileperms($path)), -4);
 		
 		return $perms;
 	}
