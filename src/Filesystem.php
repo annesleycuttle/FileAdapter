@@ -201,13 +201,46 @@ class Filesystem {
 	}
 	/**
 	 * Given a file path and a memory reference string, it will 
-	 * return true if the file size is under the 
+	 * return true if the file size is under the passed reference
 	 * @param  string $path         -> path to the file
 	 * @param  string/int $mixed_memory -> int : bytes / string memory ref, e.g. 54mb|34kb|4gb (case in-sensitive)
 	 * @return boolean               
 	 */
 	public function checkFilesize($path, $mixed_memory){
-
+		$bytes = $this->_convertToBytes($mixed_memory);
+		$size = $this->getSize($path);
+		var_dump($bytes);
+		var_dump($size);
+		return ($size <= $bytes);
 	}
+	/**
+	 * Given a memory reference string, it will 
+	 * return the integer value of bytes for the passed ref 
+	 * @param  string/int $mixed_memory -> int : bytes / string memory ref, e.g. 54mb|34kb|4gb (case in-sensitive)
+	 * @return boolean               
+	 */
+	public function _convertToBytes($mixed_memory){
+
+		$bytes = 0;
+		$units = array( 'TB'=>4, 'GB'=>3, 'MB'=>2, 'KB'=>1, 'B'=>0 );
+	
+		if( is_numeric( $mixed_memory ) ){
+			$bytes = (int)$mixed_memory;
+		}else{
+			foreach($units as $unit => $scale){
+				$m = strtoupper($mixed_memory);
+				if(strrpos( $m , $unit )){
+					$mem_amount = str_replace($unit, '', $m);
+					for ($i = 0; $i < $scale; $i++){
+						$mem_amount = $mem_amount  * 1024;
+					}
+					$bytes = $mem_amount;
+					break;
+				}
+			}
+		}
+		return $bytes;
+	}
+
 
 }
