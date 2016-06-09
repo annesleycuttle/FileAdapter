@@ -9,8 +9,21 @@ class Local implements AdapterInterface{
 
 	private $root_path = '';
 
-	public function __construct( $root = '' ){
+	private $writeFlags;
+
+	private $default_permisons = array(
+		'file'=>0644,
+		'folder'=>=755
+	);
+	public function __construct( $root = '', $writeFlags = LOCK_EX, $permissions = array() ){
 		$this->root_path = $root;
+		$this->writeFlags = $writeFlags;
+		if(isset($permissions['file'])){
+			$this->default_permisons['file'] = $permissions['file'];
+		}		
+		if(isset($permissions['folder'])){
+			$this->default_permisons['folder'] = $permissions['folder'];
+		}
 	}
 	/**
 	 * write this file to the local HDD
@@ -32,7 +45,9 @@ class Local implements AdapterInterface{
 
 		if( !$this->has($path) ){
 
-			return (bool)file_put_contents($full_path, $contents);	
+			$x = (bool)file_put_contents($full_path, $contents);
+			$this->setPermissions($path,$this->default_permisons['file']);	
+			return $x;
 
 		}else{
 			throw new FileExistsException($full_path );
@@ -195,7 +210,9 @@ class Local implements AdapterInterface{
  	public function createDir($dirname){
 		$full_path = $this->root_path . DIRECTORY_SEPARATOR . $dirname;
 
-		return (bool)$this->ensureDirectory( $full_path );
+		$x = (bool)$this->ensureDirectory( $full_path );
+		$this->setPermissions($path,$this->default_permisons['folder']);
+		return $x;
  	}
  	/**
  	 * Recursively delete all files and folders within this directory,
