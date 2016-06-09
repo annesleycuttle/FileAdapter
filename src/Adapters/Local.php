@@ -332,7 +332,7 @@ class Local implements AdapterInterface{
 	public function setPermissions( $path , $permissions ){
 		$ret = false;
 
-		if(is_numeric($permissions)){
+		if(is_numeric($permissions) && !is_string($permissions)){
 			$full_path = $this->root_path . DIRECTORY_SEPARATOR . $path;
 			$ret = chmod( $full_path , $permissions );	
 		}
