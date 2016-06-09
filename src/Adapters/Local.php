@@ -330,9 +330,13 @@ class Local implements AdapterInterface{
 	 * @param  octal     $permissions -> mustl be octal e.g. 0755. not 755 or '755'
 	 */
 	public function setPermissions( $path , $permissions ){
+		$ret = false;
 
-		$full_path = $this->root_path . DIRECTORY_SEPARATOR . $path;
-		return chmod( $full_path , $permissions );
+		if(is_numeric($permissions)){
+			$full_path = $this->root_path . DIRECTORY_SEPARATOR . $path;
+			$ret = chmod( $full_path , $permissions );	
+		}
+		return $ret ;
 	}
 	/**
 	 * Retrieve the file permissions of a folder in the numeric form
