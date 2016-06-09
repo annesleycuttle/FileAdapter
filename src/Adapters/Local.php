@@ -11,11 +11,15 @@ class Local implements AdapterInterface{
 
 	private $writeFlags;
 
-	private $default_permisons = array(
-		'file'=>0644,
-		'folder'=>=755
-	);
+	private $default_permisons;
+
 	public function __construct( $root = '', $writeFlags = LOCK_EX, $permissions = array() ){
+
+		$this->default_permisons =  = array(
+			'file'=>0644,
+			'folder'=>=755
+		);
+
 		$this->root_path = $root;
 		$this->writeFlags = $writeFlags;
 		if(isset($permissions['file'])){
