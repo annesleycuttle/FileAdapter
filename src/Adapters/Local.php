@@ -17,7 +17,7 @@ class Local implements AdapterInterface{
 
 		$this->default_permisons =  array(
 			'file'=>0644,
-			'folder'=>=755
+			'folder'=>755
 		);
 
 		$this->root_path = $root;
