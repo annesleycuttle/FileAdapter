@@ -215,7 +215,7 @@ class Local implements AdapterInterface{
 		$full_path = $this->root_path . DIRECTORY_SEPARATOR . $dirname;
 
 		$x = (bool)$this->ensureDirectory( $full_path );
-		$this->setPermissions($path,$this->default_permisons['folder']);
+		$this->setPermissions($dirname,$this->default_permisons['folder']);
 		return $x;
  	}
  	/**
