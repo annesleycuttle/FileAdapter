@@ -15,7 +15,7 @@ class Local implements AdapterInterface{
 
 	public function __construct( $root = '', $writeFlags = LOCK_EX, $permissions = array() ){
 
-		$this->default_permisons =  = array(
+		$this->default_permisons =  array(
 			'file'=>0644,
 			'folder'=>=755
 		);
