@@ -182,26 +182,25 @@ class Local implements AdapterInterface{
 	private function process_folder($folder_path){
 
 		$directory = array();
+		$files_list = array();
 
 		$folder = scandir($folder_path);
 
 		foreach( $folder as $item ){
 
-			// if we are not the default ./ or ../ then process the cotents
+			// if we are not the default ./ or ../ then process the contents
 			if( !in_array($item, array('.','..') ) ){
 				$item_path =  $folder_path.DS. $item;
 				if(is_dir( $item_path )){
-			
 					$directory[ $item] = $this->process_folder( $item_path );
-
 				}else{
-		
-					$directory[$item] =  $item_path;
-				}	
+					$files_list[$item] =  $item_path;
+				}
 			}
-
-
 		}
+
+		$directory = array_merge($directory, $files_list);
+
 		return  $directory;
 	}
 	/**
