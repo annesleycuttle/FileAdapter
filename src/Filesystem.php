@@ -86,6 +86,24 @@ class Filesystem {
 		// Stream the file data
 		exit($string);
 	}
+	public function zip($source_path, $destination_of_zip){
+
+		$success = false;
+		$files_to_zip = array();
+		$zippy = new ZipArchive();
+
+		if($zippy->open($destination_of_zip, ZIPARCHIVE::CREATE)){
+			if(is_dir($path)){
+				$files  = $this->getAdapter()->listContents( $source_path , $recursive );
+				var_dump($files);
+			}else{
+				$files_to_zip[] = $source_path;
+			}
+			$zippy->close();
+		}
+		return $success;	
+
+	}
 	 /**
 	 * Read a file.
 	 *
