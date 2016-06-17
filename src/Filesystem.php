@@ -19,6 +19,7 @@
 #include __DIR__ . '/exceptions/file_not_found.php';
 
 namespace FileAdapter;
+use ZipArchive;
 
 class Filesystem {
 
@@ -70,7 +71,7 @@ class Filesystem {
 	 * @return header()
 	 */
 	public function download($path){
-
+		
 		header('Pragma: public');
 		header('Expires: 0');
 		header('Content-Transfer-Encoding: binary');
@@ -86,23 +87,48 @@ class Filesystem {
 		// Stream the file data
 		exit($string);
 	}
-	public function zip($source_path, $destination_of_zip){
+	public function zip($adapter_source_path, $destination_of_zip){
 
 		$success = false;
 		$files_to_zip = array();
 		$zippy = new ZipArchive();
 
 		if($zippy->open($destination_of_zip, ZIPARCHIVE::CREATE)){
-			if(is_dir($path)){
-				$files  = $this->getAdapter()->listContents( $source_path , $recursive );
-				var_dump($files);
+
+			// if ifs a directory then zip up else just zip the file 
+			if( $this->getAdapter()->is_dir($adapter_source_path) ){
+
+				// user the connected adapter to retreive a list of the folder contents
+				$files  = $this->getAdapter()->listContents( $adapter_source_path , true );
+				// lets recursively roll over folder and add them into the zip archive
+				$this->add_folder_to_zip( $adapter_source_path , $files , $zippy );
+				
 			}else{
-				$files_to_zip[] = $source_path;
+				$zippy->addFromString($adapter_source_path,'hello');
 			}
-			$zippy->close();
+
+			$success = $zippy->close();
 		}
 		return $success;	
 
+	}
+	private function add_folder_to_zip( $source_path , $paths , ZipArchive &$zipArchiveObj ){
+
+		foreach($paths as $item){
+
+			if( is_array($item) ){
+				$this->add_folder_to_zip( $source_path , $item , $zipArchiveObj );
+			}else{
+				// if we are zipping a folder then we dont want the internal zip structure to reflect its external location
+				// treat $source_path as the root for the zip
+				$x = str_replace($source_path, '', $item);
+				// zipArchive doesnt like slashes at the begining of file paths when defining its internal location
+				$new_path =  ltrim($x, DIRECTORY_SEPARATOR);
+
+				$zipArchiveObj->addFromString( $new_path ,'hello');
+
+			}
+		}
 	}
 	 /**
 	 * Read a file.

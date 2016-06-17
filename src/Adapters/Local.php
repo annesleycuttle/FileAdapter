@@ -101,7 +101,7 @@ class Local implements AdapterInterface{
 	{
 		if ( ! is_dir($root)) {
 			$umask = umask(0);
-			mkdir($root, 0777 , true);
+			mkdir($root, 0755 , true);
 			umask($umask);
 		}
 		return realpath($root);
@@ -161,6 +161,9 @@ class Local implements AdapterInterface{
 
 		return file_exists( $this->root_path . DIRECTORY_SEPARATOR . $path );
 	}
+	public function is_dir($path){
+		return is_dir($this->root_path . DIRECTORY_SEPARATOR . $path);
+	}
 	/**
 	 * List the contents of the directory
 	 * @author mike.bamber
@@ -170,7 +173,8 @@ class Local implements AdapterInterface{
 	 * @return array/false -> array contents if a directory, false if not a directory
 	 */
 	public function listContents($directory = '', $recursive = false){
-		return $this->process_folder($directory);
+		$full_path =  $directory;
+		return $this->process_folder($full_path);
 	}
 	/**
 	 * [process_folder description]
@@ -184,17 +188,18 @@ class Local implements AdapterInterface{
 		$directory = array();
 		$files_list = array();
 
-		$folder = scandir($folder_path);
+		$folder = scandir($this->root_path . DIRECTORY_SEPARATOR . $folder_path);
 
 		foreach( $folder as $item ){
 
 			// if we are not the default ./ or ../ then process the contents
 			if( !in_array($item, array('.','..') ) ){
 				$item_path =  $folder_path.DS. $item;
-				if(is_dir( $item_path )){
+				if( $this->is_dir( $item_path )){
 					$directory[ $item] = $this->process_folder( $item_path );
 				}else{
-					$files_list[$item] =  $item_path;
+					// remove double slashes in file path and return
+					$files_list[$item] = preg_replace('#/+#','/',$item_path);
 				}
 			}
 		}
