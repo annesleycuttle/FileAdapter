@@ -24,9 +24,11 @@ use ZipArchive;
 class Filesystem {
 
 	protected $adapter = null;
+	private $tmp_dir ;
 
 	public function __construct( Adapters\AdapterInterface $adapter ){
 		$this->adapter = $adapter;
+		$this->tmp_dir = __DIR__ . DIRECTORY_SEPARATOR . 'tmp';
 	}
 	/**
 	 * return the adapter in user
@@ -71,7 +73,7 @@ class Filesystem {
 	 * @return header()
 	 */
 	public function download($path){
-		
+
 		header('Pragma: public');
 		header('Expires: 0');
 		header('Content-Transfer-Encoding: binary');
@@ -87,31 +89,72 @@ class Filesystem {
 		// Stream the file data
 		exit($string);
 	}
-	public function zip($adapter_source_path, $destination_of_zip){
+	public function download_zip($path){
+
+		header('Content-type: application/zip');
+
+		$filename = basename($path);
+		header('Content-Disposition: attachment; filename="' . $filename . '";');
+		
+		$string = $this->getAdapter()->read($path);
+		exit($string);
+		#var_dump(DOCUMENT_ROOT.$path);
+		#readfile(DOCUMENT_ROOT.$path,true);
+		exit;
+
+		// Stream the file data
+		
+	}
+	/**
+	 * Zip a file/folder on the atached storage, save zip to 
+	 * temp directory and return location of file in tmp directory
+	 * @author mike.bamber
+	 * @date   2016-06-20
+	 * @param  string     $adapter_source_path -> path to file/folder on storage to zip
+	 * @return string/false -> tmp file path of newly created zip file, false if failed
+	 */
+	public function zip($adapter_source_path){
 
 		$success = false;
 		$files_to_zip = array();
 		$zippy = new ZipArchive();
+		$tmp_file_path = $this->tmp_dir. DIRECTORY_SEPARATOR . mktime() . rand(1,1000).'.zip';
 
-		if($zippy->open($destination_of_zip, ZIPARCHIVE::CREATE)){
+		if($zippy->open($tmp_file_path, ZIPARCHIVE::CREATE)){
 
 			// if ifs a directory then zip up else just zip the file 
 			if( $this->getAdapter()->is_dir($adapter_source_path) ){
-
+				#var_dump($adapter_source_path );
 				// user the connected adapter to retreive a list of the folder contents
 				$files  = $this->getAdapter()->listContents( $adapter_source_path , true );
+				#var_dump($files );
 				// lets recursively roll over folder and add them into the zip archive
 				$this->add_folder_to_zip( $adapter_source_path , $files , $zippy );
 				
 			}else{
-				$zippy->addFromString($adapter_source_path,'hello');
+				$zippy->addFromString( $adapter_source_path , $this->getAdapter()->read($adapter_source_path) );
 			}
 
-			$success = $zippy->close();
+			// if we can close and the zip is there, presume success and return the tmp location
+			if($zippy->close()){
+				if(file_exists($tmp_file_path)){
+					$success = $tmp_file_path;
+				}
+			}
 		}
+
 		return $success;	
 
 	}
+	/**
+	 * recurse directory as array of file paths and folders, adding whole
+	 * structure to a the zipArchive object passed in
+	 * @author mike.bamber
+	 * @date   2016-06-20
+	 * @param  string     $source_path    -> source path of the directory
+	 * @param  array     $paths          -> array or file and folder paths
+	 * @param  ZipArchive &$zipArchiveObj -> ZipArchive object to add files too
+	 */
 	private function add_folder_to_zip( $source_path , $paths , ZipArchive &$zipArchiveObj ){
 
 		foreach($paths as $item){
@@ -119,16 +162,42 @@ class Filesystem {
 			if( is_array($item) ){
 				$this->add_folder_to_zip( $source_path , $item , $zipArchiveObj );
 			}else{
+				#var_dump($source_path );
 				// if we are zipping a folder then we dont want the internal zip structure to reflect its external location
 				// treat $source_path as the root for the zip
 				$x = str_replace($source_path, '', $item);
 				// zipArchive doesnt like slashes at the begining of file paths when defining its internal location
 				$new_path =  ltrim($x, DIRECTORY_SEPARATOR);
-
-				$zipArchiveObj->addFromString( $new_path ,'hello');
+				#var_dump($new_path );
+				$zipArchiveObj->addFromString( $new_path , $this->getAdapter()->read($item) );
 
 			}
 		}
+	}
+	/**
+	 * Zip a file/folder on the attached storage and download to the browser
+	 * @author mike.bamber
+	 * @date   2016-06-20
+	 * @param  string     $adapter_source_path -> path to file/folder on storage to zip
+	 * @param  string/boolean    $filename   -> if string then will be used to name downloaded zip       
+	 * @return  header() -> downloaded zip file
+	 */
+	public function zipAndDownload($adapter_source_path , $filename = false ){
+
+		$tmp_file_path = $this->zip($adapter_source_path);
+		header('Content-type: application/zip');
+
+		$filename = basename($adapter_source_path);
+		header('Content-Disposition: attachment; filename="' . $filename . '";');
+		
+		readfile($tmp_file_path,true);
+		exit;
+	}
+	public function zipAndSave($adapter_source_path , $filename = false ){
+
+	}
+	public function zipFlushTmp($tmp_file_path){
+
 	}
 	 /**
 	 * Read a file.
