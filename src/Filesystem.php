@@ -89,22 +89,6 @@ class Filesystem {
 		// Stream the file data
 		exit($string);
 	}
-	public function download_zip($path){
-
-		header('Content-type: application/zip');
-
-		$filename = basename($path);
-		header('Content-Disposition: attachment; filename="' . $filename . '";');
-		
-		$string = $this->getAdapter()->read($path);
-		exit($string);
-		#var_dump(DOCUMENT_ROOT.$path);
-		#readfile(DOCUMENT_ROOT.$path,true);
-		exit;
-
-		// Stream the file data
-		
-	}
 	/**
 	 * Zip a file/folder on the atached storage, save zip to 
 	 * temp directory and return location of file in tmp directory
@@ -124,22 +108,25 @@ class Filesystem {
 
 			// if ifs a directory then zip up else just zip the file 
 			if( $this->getAdapter()->is_dir($adapter_source_path) ){
-				#var_dump($adapter_source_path );
+
 				// user the connected adapter to retreive a list of the folder contents
 				$files  = $this->getAdapter()->listContents( $adapter_source_path , true );
-				#var_dump($files );
+
 				// lets recursively roll over folder and add them into the zip archive
 				$this->add_folder_to_zip( $adapter_source_path , $files , $zippy );
+
 				
 			}else{
-				$zippy->addFromString( $adapter_source_path , $this->getAdapter()->read($adapter_source_path) );
+				$zippy->addFromString(basename($adapter_source_path) , $this->getAdapter()->read($adapter_source_path) );
 			}
 
 			// if we can close and the zip is there, presume success and return the tmp location
 			if($zippy->close()){
+
 				if(file_exists($tmp_file_path)){
 					$success = $tmp_file_path;
 				}
+
 			}
 		}
 
@@ -162,13 +149,12 @@ class Filesystem {
 			if( is_array($item) ){
 				$this->add_folder_to_zip( $source_path , $item , $zipArchiveObj );
 			}else{
-				#var_dump($source_path );
 				// if we are zipping a folder then we dont want the internal zip structure to reflect its external location
 				// treat $source_path as the root for the zip
 				$x = str_replace($source_path, '', $item);
 				// zipArchive doesnt like slashes at the begining of file paths when defining its internal location
 				$new_path =  ltrim($x, DIRECTORY_SEPARATOR);
-				#var_dump($new_path );
+
 				$zipArchiveObj->addFromString( $new_path , $this->getAdapter()->read($item) );
 
 			}
@@ -185,19 +171,44 @@ class Filesystem {
 	public function zipAndDownload($adapter_source_path , $filename = false ){
 
 		$tmp_file_path = $this->zip($adapter_source_path);
-		header('Content-type: application/zip');
 
-		$filename = basename($adapter_source_path);
+		// if filename has not been overriden then set it
+		if( !is_string($filename) ){
+			// lets build the filename
+			$filename = basename($adapter_source_path);
+			$ext = pathinfo( $adapter_source_path , PATHINFO_EXTENSION);
+			// if its a file, we need to replace the ext with zip for file name
+			if(!empty($ext)){
+				$filename = str_replace($ext, 'zip', $filename);
+			}
+		}
+		// if the passed in variable does not have the zip extension or its a folder then add the .zip on the end
+		if( strpos($filename, '.zip') === false ){
+			$filename .= '.zip';
+		}
+		
+		header('Content-type: application/zip');	
 		header('Content-Disposition: attachment; filename="' . $filename . '";');
 		
 		readfile($tmp_file_path,true);
+		$this->zipFlushTmp($tmp_file_path);
 		exit;
 	}
 	public function zipAndSave($adapter_source_path , $filename = false ){
 
 	}
+	/**
+	 * Remove the temp file for a zip file that has bee created
+	 * @author mike.bamber
+	 * @date   2016-06-20
+	 * @param  string     $tmp_file_path -> path to tmp file
+	 * @return null
+	 */
 	public function zipFlushTmp($tmp_file_path){
-
+		if( file_exists($tmp_file_path) ){
+			unlink($tmp_file_path);
+		}
+		
 	}
 	 /**
 	 * Read a file.
@@ -322,8 +333,6 @@ class Filesystem {
 	public function checkFilesize($path, $mixed_memory){
 		$bytes = $this->_convertToBytes($mixed_memory);
 		$size = $this->getSize($path);
-		var_dump($bytes);
-		var_dump($size);
 		return ($size <= $bytes);
 	}
 	/**
