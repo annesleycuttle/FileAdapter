@@ -172,6 +172,41 @@ class Filesystem {
 
 		$tmp_file_path = $this->zip($adapter_source_path);
 
+		$filename = $this->setUpZipFileName($adapter_source_path , $filename);
+		
+		header('Content-type: application/zip');	
+		header('Content-Disposition: attachment; filename="' . $filename . '";');
+		
+		readfile($tmp_file_path,true);
+		$this->zipFlushTmp($tmp_file_path);
+		exit;
+	}
+	/**
+	 * Zip a file/folder on the attached storage and save to elsewhere on the attached storage
+	 * @author mike.bamber
+	 * @date   2016-06-21
+	 * @param  string     $adapter_source_path -> path to file/folder on storage to zip
+	 * @param  string     $destination_path    -> folder to save the zip folder to
+	 * @param  string/boolean    $filename   -> if string then will be used to name save zip, if false uses basename
+	 * @return boolean                         
+	 */
+	public function zipAndSave($adapter_source_path , $destination_path , $filename = false ){
+
+		$tmp_file_path = $this->zip($adapter_source_path);
+
+		$filename = $this->setUpZipFileName($adapter_source_path , $filename);
+
+		$zipContents = file_get_contents($tmp_file_path);
+		
+		return $this->getAdapter()->write( $destination_path . DIRECTORY_SEPARATOR . $filename , $zipContents  );
+	}
+	/**
+	 *  Take input and prepare filename for a zip file
+	 * @author mike.bamber
+	 * @date   2016-06-21
+	 * @param  boolean    $filename [description]
+	 */
+	private function setUpZipFileName( $adapter_source_path , $filename = false){
 		// if filename has not been overriden then set it
 		if( !is_string($filename) ){
 			// lets build the filename
@@ -186,16 +221,7 @@ class Filesystem {
 		if( strpos($filename, '.zip') === false ){
 			$filename .= '.zip';
 		}
-		
-		header('Content-type: application/zip');	
-		header('Content-Disposition: attachment; filename="' . $filename . '";');
-		
-		readfile($tmp_file_path,true);
-		$this->zipFlushTmp($tmp_file_path);
-		exit;
-	}
-	public function zipAndSave($adapter_source_path , $filename = false ){
-
+		return $filename;
 	}
 	/**
 	 * Remove the temp file for a zip file that has bee created
