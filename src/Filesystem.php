@@ -157,7 +157,7 @@ class Filesystem {
 				$files  = $this->getAdapter()->listContents( $adapter_source_path , true );
 
 				// lets recursively roll over folder and add them into the zip archive
-				$this->add_folder_to_zip( $adapter_source_path , $files , $zippy );
+				$this->addFolderToZip( $adapter_source_path , $files , $zippy );
 
 				
 			}else{
@@ -186,12 +186,12 @@ class Filesystem {
 	 * @param  array     $paths          -> array or file and folder paths
 	 * @param  ZipArchive &$zipArchiveObj -> ZipArchive object to add files too
 	 */
-	private function add_folder_to_zip( $source_path , $paths , ZipArchive &$zipArchiveObj ){
+	private function addFolderToZip( $source_path , $paths , ZipArchive &$zipArchiveObj ){
 
 		foreach($paths as $item){
 
 			if( is_array($item) ){
-				$this->add_folder_to_zip( $source_path , $item , $zipArchiveObj );
+				$this->addFolderToZip( $source_path , $item , $zipArchiveObj );
 			}else{
 				// if we are zipping a folder then we dont want the internal zip structure to reflect its external location
 				// treat $source_path as the root for the zip
@@ -420,7 +420,7 @@ class Filesystem {
 	 * @return boolean               
 	 */
 	public function checkFilesize($path, $mixed_memory){
-		$bytes = $this->_convertToBytes($mixed_memory);
+		$bytes = $this->convertToBytes($mixed_memory);
 		$size = $this->getSize($path);
 		return ($size <= $bytes);
 	}
@@ -444,7 +444,7 @@ class Filesystem {
 	 * @param  string/int $mixed_memory -> int : bytes / string memory ref, e.g. 54mb|34kb|4gb (case in-sensitive)
 	 * @return boolean               
 	 */
-	public function _convertToBytes($mixed_memory){
+	private function convertToBytes($mixed_memory){
 
 		$bytes = 0;
 		$units = array( 'TB'=>4, 'GB'=>3, 'MB'=>2, 'KB'=>1, 'B'=>0 );
