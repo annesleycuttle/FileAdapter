@@ -181,7 +181,6 @@ Notes for Improvement
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - Add RootViolationException to local adapter/ filesystem used in deleteDir
 - look into the stream functions and implementing them
-- functions put , rename, update,  readAndDelete worth adding
 - function getMetadata, useful. seems like PL implementation could be better and have more info
 - add write flags to file_put_contents
 - suggest we write a file append function (doesn't exist in PL)

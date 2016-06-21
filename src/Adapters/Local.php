@@ -57,6 +57,33 @@ class Local implements AdapterInterface{
 			throw new FileExistsException($full_path );
 		}
 	}
+	/**
+	 * update the data in this file on the local HDD
+	 * @author mike.bamber
+	 * @date   2016-03-17
+	 * @param  string     $path     
+	 * @param  string     $contents 
+	 * @param  array      $config   
+	 *
+	  * @throws FileNotFoundException
+	  * 
+	 * @return bool               
+	 */
+	public function update($path , $contents, array $config = array()){
+
+		$full_path = $this->root_path . DIRECTORY_SEPARATOR . $path;
+
+		$this->ensureDirectory( dirname($full_path) );
+
+		if( $this->has($path) ){
+
+			$x = (bool)file_put_contents($full_path, $contents);	
+			return $x;
+
+		}else{
+			throw new FileNotFoundException($full_path );
+		}
+	}
 	/*
 	     * Copy file to another place on the file system.
 	     *
@@ -151,6 +178,35 @@ class Local implements AdapterInterface{
 		}
 	}
 	/**
+	 * move a file from one location on the HDD to another, potentially under a new name
+	 * @author mike.bamber
+	 * @date   2016-06-21
+	 * @param  string     $path    -> source path on HDD 
+	 * @param  string     $newpath -> destination path on HDD 
+	 * @return  boolean
+	 */
+	public function rename($path, $newpath){
+
+		$location = $this->root_path . DIRECTORY_SEPARATOR . $path;
+		$destination = $this->root_path . DIRECTORY_SEPARATOR . $newpath;
+
+		if( $this->has($path) ){
+
+			if( $this->has($newpath) ){
+
+				
+				return rename($location, $destination);	
+
+			}else{
+				throw new FileExistsException($destination );
+			}	
+
+		}else{
+			throw new FileNotFoundException($location );
+		}
+
+	}
+	/**
 	 *  Check the file storage to see if the file exists
 	 * @author mike.bamber
 	 * @date   2016-03-17
@@ -161,6 +217,13 @@ class Local implements AdapterInterface{
 
 		return file_exists( $this->root_path . DIRECTORY_SEPARATOR . $path );
 	}
+	/**
+	 * check if path is a directory
+	 * @author mike.bamber
+	 * @date   2016-06-21
+	 * @param  string     $path 
+	 * @return boolean          
+	 */
 	public function is_dir($path){
 		return is_dir($this->root_path . DIRECTORY_SEPARATOR . $path);
 	}

@@ -63,6 +63,50 @@ class Filesystem {
 	 */
 	public function write($path , $contents, array $config = array() ){
 		return $this->getAdapter()->write( $path , $contents , $config );
+	}	
+	/**
+	 * Update the contents of a file on the file systems
+	 * @author mike.bamber
+	 * @date   2016-03-17
+	 * @param  string     $path     -> the file path of the existing file
+	 * @param  string     $contents -> the contents to save
+	 * @param  array     $config -> any optional config
+	 *
+	 * @throws FileNotFoundException
+	 * 
+	 * @return bool
+	 */
+	public function update($path , $contents, array $config = array() ){
+		return $this->getAdapter()->update( $path , $contents , $config );
+	}
+	/**
+	 * Create a file or update if exists then write contents
+	 * @author mike.bamber
+	 * @date   2016-06-21
+	 * @param  string     $path     -> the file path of the existing file
+	 * @param  string     $contents -> the contents to save
+	 * @param  array     $config -> any optional config
+	 * @return bool
+	 */
+	public function put($path , $contents, array $config = array()){
+
+		if( $this->has($path) ){
+			return $this->update($path , $contents , $config);
+		}else{
+			return $this->write($path , $contents , $config);
+		}
+	}
+	/**
+	 * rename and or move a file on the file system from one location
+	 * to another location
+	 * @author mike.bamber
+	 * @date   2016-06-21
+	 * @param  string     $path     -> the file path of the existing file
+	 * @param  string     $newpath  -> the file path of new location and filename
+	 * @return boolean            
+	 */
+	public function rename($path, $newpath){
+		return $this->getAdapter()->rename( $path , $newpath );
 	}
 	/**
 	 * Read a file and download to users browser by streaming
@@ -197,7 +241,7 @@ class Filesystem {
 		$filename = $this->setUpZipFileName($adapter_source_path , $filename);
 
 		$zipContents = file_get_contents($tmp_file_path);
-		
+
 		return $this->getAdapter()->write( $destination_path . DIRECTORY_SEPARATOR . $filename , $zipContents  );
 	}
 	/**
@@ -260,6 +304,25 @@ class Filesystem {
 	 */
 	public function delete($path){
 		return $this->getAdapter()->delete($path);
+	}
+	/**
+	 * Read the contents of a file and return as a string
+	 * deleting file from the disk
+	 * @author mike.bamber
+	 * @date   2016-06-21
+	 * @param  string     $path ->  The path to the file.
+	 *
+	 * @throws FileNotFoundException
+	 *  
+	 * @return string|false The file contents or false on failure.
+	 */
+	public function readAndDelete($path){
+
+		$data =  $this->getAdapter()->read($path);
+		if($data){
+			$this->getAdapter()->delete($path);
+		}
+		return $data;
 	}
 	/**
 	 * Copy a file from one location to another
