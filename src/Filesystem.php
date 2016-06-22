@@ -28,9 +28,9 @@ class Filesystem {
 
 	public function __construct( Adapters\AdapterInterface $adapter ){
 		$this->adapter = $adapter;
-		if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'tmp')) {
-			mkdir(__DIR__ . DIRECTORY_SEPARATOR . 'tmp', 0755);
-		}
+//		if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'tmp')) {
+//			mkdir(__DIR__ . DIRECTORY_SEPARATOR . 'tmp', 0755);
+//		}
 		$this->tmp_dir = __DIR__ . DIRECTORY_SEPARATOR . 'tmp';
 	}
 	/**
