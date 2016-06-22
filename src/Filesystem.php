@@ -28,7 +28,10 @@ class Filesystem {
 
 	public function __construct( Adapters\AdapterInterface $adapter ){
 		$this->adapter = $adapter;
-		$this->tmp_dir = $adapter['root_path'] . 'documents' . DIRECTORY_SEPARATOR . 'tmp';
+		if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'tmp')) {
+			mkdir(__DIR__ . DIRECTORY_SEPARATOR . 'tmp', 0777);
+		}
+		$this->tmp_dir = __DIR__ . DIRECTORY_SEPARATOR . 'tmp';
 	}
 	/**
 	 * return the adapter in user
