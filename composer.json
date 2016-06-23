@@ -14,7 +14,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "mkdir /var/www/html/uat2/tendermanagement/httpdocs/barry"
+            "mkdir /var/www/html/uat2/tendermanagement/httpdocs/vendor/FabricDigital/FileAdapter/src/barry"
         ]
     },
     "require-dev": {},
