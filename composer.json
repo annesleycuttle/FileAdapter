@@ -14,7 +14,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "chown apache:apache src/tmp"
+            "mkdir test"
         ]
     },
     "require-dev": {},
