@@ -14,7 +14,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "mkdir -p test"
+            "mkdir /var/www/html/uat2/tendermanagement/httpdocs/barry"
         ]
     },
     "require-dev": {},
