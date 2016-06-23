@@ -14,7 +14,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "mkdir test"
+            "mkdir -p test"
         ]
     },
     "require-dev": {},
