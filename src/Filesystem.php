@@ -145,7 +145,7 @@ class Filesystem {
 	 * @return string/false -> tmp file path of newly created zip file, false if failed
 	 */
 	public function zip($adapter_source_path){
-		ini_set('memory_limit', '2048M');
+	
 		$success = false;
 		$files_to_zip = array();
 		$zippy = new ZipArchive();
