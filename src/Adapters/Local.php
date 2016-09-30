@@ -250,25 +250,28 @@ class Local implements AdapterInterface{
 
 		$directory = array();
 		$files_list = array();
+		$full_folder_path = $this->root_path . DIRECTORY_SEPARATOR . $folder_path;
 
-		$folder = scandir($this->root_path . DIRECTORY_SEPARATOR . $folder_path);
+		if(is_dir($full_folder_path)) {
+			$folder = scandir($full_folder_path);
 
-		foreach( $folder as $item ){
+			foreach( $folder as $item ){
 
-			// if we are not the default ./ or ../ then process the contents
-			if( !in_array($item, array('.','..') ) ){
-				$item_path =  $folder_path.DS. $item;
-				if( $this->is_dir( $item_path )){
-					$directory[ $item] = $this->process_folder( $item_path );
-				}else{
-					// remove double slashes in file path and return
-					$files_list[$item] = preg_replace('#/+#','/',$item_path);
+				// if we are not the default ./ or ../ then process the contents
+				if( !in_array($item, array('.','..') ) ){
+					$item_path =  $folder_path.DS. $item;
+					if( $this->is_dir( $item_path )){
+						$directory[ $item] = $this->process_folder( $item_path );
+					}else{
+						// remove double slashes in file path and return
+						$files_list[$item] = preg_replace('#/+#','/',$item_path);
+					}
 				}
 			}
+
+			$directory = array_merge($directory, $files_list);
 		}
-
-		$directory = array_merge($directory, $files_list);
-
+		
 		return  $directory;
 	}
 	/**
