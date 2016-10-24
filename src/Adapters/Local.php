@@ -29,6 +29,10 @@ class Local implements AdapterInterface{
 			$this->default_permisons['folder'] = $permissions['folder'];
 		}
 	}
+	
+	public function getPathPrefix(){
+		return $this->root_path;
+	}
 	/**
 	 * write this file to the local HDD
 	 * @author mike.bamber
@@ -150,6 +154,28 @@ class Local implements AdapterInterface{
 		if( $this->has($path) ){
 
 			return  file_get_contents($full_path);	
+
+		}else{
+			throw new FileNotFoundException($full_path );
+		}
+	}
+		/**
+	 * Read a file stram, returning a file pointer resource
+	 * @author mike.bamber
+	 * @date   2016-03-17
+	 * @param  string     $path 
+	 *
+	  * @throws FileNotFoundException
+	  * 
+	 * @return mixed -> php fopen(r)
+	 */
+	public function readStream($path){
+
+		$full_path = $this->root_path . DIRECTORY_SEPARATOR . $path;
+
+		if( $this->has($path) ){
+
+			return  fopen($full_path,'r');	
 
 		}else{
 			throw new FileNotFoundException($full_path );

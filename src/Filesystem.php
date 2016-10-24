@@ -42,6 +42,10 @@ class Filesystem {
 	public function getAdapter(){
 		return $this->adapter;
 	}
+	public function getPathPrefix(){
+		return $this->getAdapter()->getPathPrefix();
+		
+	}
 	/**
 	 * Check if a file exists on the file system
 	 * @author mike.bamber
@@ -294,6 +298,18 @@ class Filesystem {
 	 */
 	public function read($path){
 		return $this->getAdapter()->read($path);
+	}	
+	/**
+	 * Read a file and return file resource object.
+	 *
+	 * @param string $path The path to the file.
+	 *
+	 * @throws FileNotFoundException
+	 *
+	 * @return Object|false A PHP file pointer object/resource.
+	 */
+	public function readStream($path){
+		return $this->getAdapter()->readStream($path);
 	}	 
 	/**
 	 * Delete a file.
