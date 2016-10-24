@@ -25,6 +25,11 @@ class Filesystem {
 
 	protected $adapter = null;
 	private $tmp_dir ;
+	private $ext_mime_map = array(
+		'txt'=>'text/plain',
+		'xml'=>'text/plain',
+		'csv'=>'text/plain',
+	);
 
 	public function __construct( Adapters\AdapterInterface $adapter ){
 		$this->adapter = $adapter;
@@ -427,8 +432,25 @@ class Filesystem {
 	public function isType($path, $types = array()){
 
 		$mime = $this->getAdapter()->getMimetype( $path );
-		$bits = explode('/', $mime);
-		return in_array($bits[1], $types);
+		$bits = explode('.', $path);
+		$ext = $bits[ count($bits)-1 ];
+		$mimeCheckPassed = false;
+		$extCheckPassed = false;
+		foreach($types as $type){
+			
+			if($this->ext_mime_map[ $type ] == $mime){
+				$mimeCheckPassed = true;
+			}
+			if($ext == $type){
+				$extCheckPassed = true;		
+			}
+			
+		}
+		if($mimeCheckPassed && $extCheckPassed){
+			return true;
+		}else{
+			return false;
+		}
 
 	}
 	/**
