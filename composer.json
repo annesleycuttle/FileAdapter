@@ -18,5 +18,5 @@
             "FileAdapter\\" : "src/"
         }
     },
-    "files": ["src/mimes.php"]
+    "files": ["src/Mimes.php"]
 }
