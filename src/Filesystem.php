@@ -31,7 +31,7 @@ class Filesystem {
 
 	public function __construct( Adapters\AdapterInterface $adapter ){
 		global $mimes;
-		$this->ext_mime_map = $mime;
+		$this->ext_mime_map = $mimes;
 		$this->adapter = $adapter;
 		if (!file_exists('/tmp/FileAdapter')) {
 			mkdir('/tmp/FileAdapter', 0777);
