@@ -26,12 +26,12 @@ class Filesystem {
 	protected $adapter = null;
 	private $tmp_dir ;
 	private $ext_mime_map = array(
-		'txt'=>'text/plain',
-		'xml'=>'text/plain',
-		'csv'=>'text/plain',
+		
 	);
 
 	public function __construct( Adapters\AdapterInterface $adapter ){
+		global $mimes;
+		$this->ext_mime_map = $mime;
 		$this->adapter = $adapter;
 		if (!file_exists('/tmp/FileAdapter')) {
 			mkdir('/tmp/FileAdapter', 0777);
@@ -438,7 +438,7 @@ class Filesystem {
 		$extCheckPassed = false;
 		foreach($types as $type){
 			
-			if($this->ext_mime_map[ $type ] == $mime){
+			if( in_array( $mime , $this->ext_mime_map[ $type ] ) ){
 				$mimeCheckPassed = true;
 			}
 			if($ext == $type){

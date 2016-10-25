@@ -1,8 +1,8 @@
 {
-	 "name": "FabricDigital/FileAdapter",
-	 "description": "This is a custom file adapter that mirrors functionality of flysystem for PHP 5.3",
-	 "keywords": ["adapter", "file", "system"],
-	 "authors" : [
+     "name": "FabricDigital/FileAdapter",
+     "description": "This is a custom file adapter that mirrors functionality of flysystem for PHP 5.3",
+     "keywords": ["adapter", "file", "system"],
+     "authors" : [
         {
             "name": "Mike Bamber",
             "email": "mike.bamber@procure-plus.com",
@@ -13,9 +13,10 @@
         "php": ">=5.3.0"
     },
     "require-dev": {},
-	"autoload": {
+    "autoload": {
         "psr-4" : {
             "FileAdapter\\" : "src/"
         }
-    }
+    },
+    "files": ["src/mimes.php"]
 }
