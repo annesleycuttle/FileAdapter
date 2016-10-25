@@ -20,7 +20,7 @@
 
 namespace FileAdapter;
 use ZipArchive;
-
+require_once('Mimes.php');
 class Filesystem {
 
 	protected $adapter = null;
