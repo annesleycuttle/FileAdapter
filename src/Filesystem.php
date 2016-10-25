@@ -38,6 +38,9 @@ class Filesystem {
 		}
 		$this->tmp_dir = '/tmp/FileAdapter';
 	}
+	public function getKnownExtensions(){
+		return array_keys($this->ext_mime_map);
+	}
 	/**
 	 * return the adapter in user
 	 * @author mike.bamber
