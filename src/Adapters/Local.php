@@ -220,11 +220,10 @@ class Local implements AdapterInterface{
 
 			if( $this->has($newpath) ){
 
-				
-				return rename($location, $destination);	
-
-			}else{
 				throw new FileExistsException($destination );
+				
+			}else{
+				return rename($location, $destination);	
 			}	
 
 		}else{
