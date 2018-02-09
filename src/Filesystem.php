@@ -456,6 +456,25 @@ class Filesystem {
 		}
 
 	}
+
+    /**
+     * This will retrieve the filetype, using the path given.
+     * @param  string  $path  -> path to the file
+     * @return string/boolean   $filetype-> The file extension
+     */
+    public function getType($path){
+
+        $bits = explode('.', $path);
+        $filetype = $bits[ count($bits)-1 ];
+
+        if($filetype) {
+            return $filetype;
+        } else {
+            return false;
+        }
+
+    }
+    
 	/**
 	 * Given a file path and a memory reference string, it will 
 	 * return true if the file size is under the passed reference
